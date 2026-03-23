@@ -1,15 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from code.Const import WIN_WIDTH, ENTITY_SPEED
-from code.Entity import Entity
+from code.AssetManager import AssetManager
+from code.Const import ASSET_BACKGROUND, WIN_WIDTH, WIN_HEIGHT
 
 
-class Background(Entity):
-    def __init__(self, name: str, position: tuple):
-        super().__init__(name, position)
+class Background:
+    def __init__(self):
+        self.image = AssetManager.image(ASSET_BACKGROUND, (WIN_WIDTH, WIN_HEIGHT))
 
-    def move(self, ):
-        self.rect.centerx -= ENTITY_SPEED[self.name]
-        if self.rect.right <= 0:
-            self.rect.left = WIN_WIDTH
-
+    def draw(self, screen):
+        screen.blit(self.image, (0, 0))

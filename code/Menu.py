@@ -1,57 +1,49 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
-import pygame.image
-from pygame import Surface, Rect
-from pygame.font import Font
-
-from code.Const import WIN_WIDTH, C_ORANGE, MENU_OPTION, C_WHITE, C_YELLOW
+import pygame
+from code.Const import (
+    C_WHITE,
+    C_LIGHT_GRAY,
+    C_GREEN,
+    MENU_OPTION,
+    SCORE_POS
+)
 
 
 class Menu:
-    def __init__(self, window):
-        self.window = window
-        self.surf = pygame.image.load('./asset/MenuBg.png').convert_alpha()
-        self.rect = self.surf.get_rect(left=0, top=0)
+    def __init__(self):
+        self.title_font = pygame.font.SysFont('arial', 44, bold=True)
+        self.text_font = pygame.font.SysFont('arial', 28)
+        self.small_font = pygame.font.SysFont('arial', 22)
 
-    def run(self):
-        menu_option = 0
-        pygame.mixer_music.load('./asset/Menu.mp3')
-        pygame.mixer_music.play(-1)
-        while True:
-            # DRAW IMAGES
-            self.window.blit(source=self.surf, dest=self.rect)
-            self.menu_text(50, "Mountain", C_ORANGE, ((WIN_WIDTH / 2), 70))
-            self.menu_text(50, "Shooter", C_ORANGE, ((WIN_WIDTH / 2), 120))
+    def draw(self, screen, selected_option, top_scores):
+        title = self.title_font.render('TRAVESSIA URBANA', True, C_WHITE)
+        subtitle = self.text_font.render('Demo 2D em Python', True, C_LIGHT_GRAY)
 
-            for i in range(len(MENU_OPTION)):
-                if i == menu_option:
-                    self.menu_text(20, MENU_OPTION[i], C_YELLOW, ((WIN_WIDTH / 2), 200 + 25 * i))
-                else:
-                    self.menu_text(20, MENU_OPTION[i], C_WHITE, ((WIN_WIDTH / 2), 200 + 25 * i))
-            pygame.display.flip()
+        screen.blit(title, title.get_rect(center=SCORE_POS['Title']))
+        screen.blit(subtitle, subtitle.get_rect(center=SCORE_POS['Subtitle']))
 
-            # Check for all events
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()  # Close Window
-                    quit()  # end pygame
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_DOWN:  # DOWN KEY
-                        if menu_option < len(MENU_OPTION) - 1:
-                            menu_option += 1
-                        else:
-                            menu_option = 0
-                    if event.key == pygame.K_UP:  # UP KEY
-                        if menu_option > 0:
-                            menu_option -= 1
-                        else:
-                            menu_option = len(MENU_OPTION) - 1
-                    if event.key == pygame.K_RETURN:  # ENTER
-                        return MENU_OPTION[menu_option]
+        for index, option in enumerate(MENU_OPTION):
+            color = C_GREEN if index == selected_option else C_WHITE
+            text = self.text_font.render(option, True, color)
+            screen.blit(text, text.get_rect(center=SCORE_POS[index]))
 
-    def menu_text(self, text_size: int, text: str, text_color: tuple, text_center_pos: tuple):
-        text_font: Font = pygame.font.SysFont(name="Lucida Sans Typewriter", size=text_size)
-        text_surf: Surface = text_font.render(text, True, text_color).convert_alpha()
-        text_rect: Rect = text_surf.get_rect(center=text_center_pos)
-        self.window.blit(source=text_surf, dest=text_rect)
+        controls1 = self.small_font.render('P1: W A S D', True, C_LIGHT_GRAY)
+        controls2 = self.small_font.render('P2: SETAS', True, C_LIGHT_GRAY)
+        controls3 = self.small_font.render('ENTER: selecionar  |  ESC: voltar', True, C_LIGHT_GRAY)
+
+        screen.blit(controls1, controls1.get_rect(center=(400, 420)))
+        screen.blit(controls2, controls2.get_rect(center=(400, 450)))
+        screen.blit(controls3, controls3.get_rect(center=(400, 480)))
+
+        record_title = self.small_font.render('TOP SCORES', True, C_GREEN)
+        screen.blit(record_title, record_title.get_rect(center=(400, 525)))
+
+        x = 160
+        y = 550
+        for mode, level, time_left in top_scores[:3]:
+            record_text = self.small_font.render(
+                f'{mode} | Level {level} | {time_left}s',
+                True,
+                C_WHITE
+            )
+            screen.blit(record_text, (x, y))
+            y += 25
