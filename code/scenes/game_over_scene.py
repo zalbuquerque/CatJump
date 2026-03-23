@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import pygame
 
-from code.const import C_PANEL, C_PANEL_BORDER, C_TEXT, C_SKY, FONT_NAME, WIN_HEIGHT, WIN_WIDTH
+from code.asset_loader import load_image
+from code.const import C_PANEL, C_PANEL_BORDER, C_TEXT, FONT_NAME, IMG_BG, WIN_WIDTH, WIN_HEIGHT
 from code.scenes.base_scene import BaseScene
 
 
@@ -13,6 +14,7 @@ class GameOverScene(BaseScene):
         self.title_font = pygame.font.SysFont(FONT_NAME, 52, bold=True)
         self.text_font = pygame.font.SysFont(FONT_NAME, 28)
         self.small_font = pygame.font.SysFont(FONT_NAME, 22)
+        self.background = load_image(IMG_BG, (WIN_WIDTH, WIN_HEIGHT), alpha=False)
 
     def handle_event(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN:
@@ -29,7 +31,7 @@ class GameOverScene(BaseScene):
         pass
 
     def draw(self, screen: pygame.Surface) -> None:
-        screen.fill(C_SKY)
+        screen.blit(self.background, (0, 0))
         panel = pygame.Rect(220, 140, 520, 230)
         pygame.draw.rect(screen, C_PANEL, panel, border_radius=20)
         pygame.draw.rect(screen, C_PANEL_BORDER, panel, width=2, border_radius=20)

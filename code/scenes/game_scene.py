@@ -2,15 +2,16 @@ from __future__ import annotations
 
 import pygame
 
+from code.asset_loader import load_image
 from code.collision import CollisionSystem
 from code.const import (
-    C_GRASS,
-    C_GROUND,
-    C_SKY,
     EVENT_SCORE_TICK,
     EVENT_SPAWN_COIN,
     EVENT_SPAWN_OBSTACLE,
     GROUND_Y,
+    IMG_BG,
+    WIN_HEIGHT,
+    WIN_WIDTH,
 )
 from code.entity_factory import EntityFactory
 from code.hud import Hud
@@ -26,6 +27,7 @@ class GameScene(BaseScene):
         self.score = 0
         self.hud = Hud()
         self.parallax_x = 0
+        self.background = load_image(IMG_BG, (WIN_WIDTH, WIN_HEIGHT), alpha=False)
 
         pygame.time.set_timer(EVENT_SPAWN_OBSTACLE, 1450)
         pygame.time.set_timer(EVENT_SPAWN_COIN, 2100)
@@ -50,7 +52,7 @@ class GameScene(BaseScene):
                 self.game.best_score = self.score
 
     def update(self) -> None:
-        self.parallax_x = (self.parallax_x + 4) % 120
+        self.parallax_x = (self.parallax_x + 2) % WIN_WIDTH
         keys = pygame.key.get_pressed()
         self.player.update(keys)
 
@@ -74,29 +76,13 @@ class GameScene(BaseScene):
             self.next_scene = GameOverScene(self.game, self.score)
 
     def draw(self, screen: pygame.Surface) -> None:
-        screen.fill(C_SKY)
-        self._draw_cloud_bands(screen)
-        self._draw_ground(screen)
-
+        screen.blit(self.background, (0, 0))
         for coin in self.coins:
             coin.draw(screen)
         for obstacle in self.obstacles:
             obstacle.draw(screen)
         self.player.draw(screen)
         self.hud.draw(screen, self.score, self.game.best_score)
-
-    def _draw_cloud_bands(self, screen: pygame.Surface) -> None:
-        for base_x in range(-120, 1080, 180):
-            x = base_x - self.parallax_x
-            pygame.draw.ellipse(screen, (255, 255, 255), (x, 85, 80, 28))
-            pygame.draw.ellipse(screen, (255, 255, 255), (x + 35, 72, 85, 34))
-
-    def _draw_ground(self, screen: pygame.Surface) -> None:
-        pygame.draw.rect(screen, C_GRASS, (0, GROUND_Y - 10, 960, 12))
-        pygame.draw.rect(screen, C_GROUND, (0, GROUND_Y, 960, 110))
-        for x in range(-40, 1000, 45):
-            offset = (x - self.parallax_x * 2) % 1040 - 40
-            pygame.draw.line(screen, (141, 110, 99), (offset, GROUND_Y + 18), (offset + 20, GROUND_Y + 18), 3)
 
     @staticmethod
     def _stop_timers() -> None:

@@ -1,16 +1,5 @@
+from pathlib import Path
 import pygame
-
-# Cores
-C_SKY = (179, 229, 252)
-C_GROUND = (109, 76, 65)
-C_GRASS = (76, 175, 80)
-C_PLAYER = (33, 150, 243)
-C_OBSTACLE = (244, 67, 54)
-C_COIN = (255, 193, 7)
-C_TEXT = (33, 33, 33)
-C_TEXT_LIGHT = (250, 250, 250)
-C_PANEL = (255, 255, 255)
-C_PANEL_BORDER = (200, 200, 200)
 
 # Janela
 WIN_WIDTH = 960
@@ -35,5 +24,22 @@ COIN_SPAWN_MS = 2100
 SCORE_TICK_MS = 200
 
 # Fonte
-FONT_NAME = 'arial'
-GAME_TITLE = 'Jump Trail'
+FONT_NAME = "arial"
+GAME_TITLE = "Jump Trail"
+
+# Cores de apoio
+C_TEXT = (31, 35, 48)
+C_TEXT_LIGHT = (250, 250, 250)
+C_PANEL = (255, 255, 255)
+C_PANEL_BORDER = (200, 210, 225)
+C_SHADOW = (0, 0, 0, 90)
+
+# Paths
+ROOT_DIR = Path(__file__).resolve().parent.parent
+ASSET_DIR = ROOT_DIR / "assets"
+IMAGE_DIR = ASSET_DIR / "images"
+
+IMG_BG = IMAGE_DIR / "background.png"
+IMG_PLAYER = IMAGE_DIR / "player.png"
+IMG_OBSTACLE = IMAGE_DIR / "obstacle.png"
+IMG_COIN = IMAGE_DIR / "coin.png"

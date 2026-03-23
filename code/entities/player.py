@@ -2,25 +2,18 @@ from __future__ import annotations
 
 import pygame
 
-from code.const import (
-    C_PLAYER,
-    C_TEXT_LIGHT,
-    GRAVITY,
-    GROUND_Y,
-    JUMP_STRENGTH,
-    MAX_FALL_SPEED,
-    PLAYER_SPEED,
-)
+from code.asset_loader import load_image
+from code.const import GRAVITY, GROUND_Y, IMG_PLAYER, JUMP_STRENGTH, MAX_FALL_SPEED, PLAYER_SPEED, WIN_WIDTH
 from code.entity import Entity
 
 
 class Player(Entity):
     def __init__(self) -> None:
-        rect = pygame.Rect(120, GROUND_Y - 64, 46, 64)
+        rect = pygame.Rect(120, GROUND_Y - 72, 72, 72)
         super().__init__('Player', rect)
         self.velocity_y = 0.0
         self.on_ground = True
-        self.jump_buffer = 0
+        self.sprite = load_image(IMG_PLAYER, (72, 72))
 
     def jump(self) -> None:
         if self.on_ground:
@@ -31,7 +24,7 @@ class Player(Entity):
         if pressed_keys:
             if pressed_keys[pygame.K_a] and self.rect.left > 0:
                 self.rect.x -= PLAYER_SPEED
-            if pressed_keys[pygame.K_d] and self.rect.right < 960:
+            if pressed_keys[pygame.K_d] and self.rect.right < WIN_WIDTH:
                 self.rect.x += PLAYER_SPEED
 
         self.velocity_y += GRAVITY
@@ -46,6 +39,4 @@ class Player(Entity):
             self.on_ground = True
 
     def draw(self, surface: pygame.Surface) -> None:
-        pygame.draw.rect(surface, C_PLAYER, self.rect, border_radius=10)
-        eye = pygame.Rect(self.rect.x + 28, self.rect.y + 16, 8, 8)
-        pygame.draw.rect(surface, C_TEXT_LIGHT, eye, border_radius=4)
+        surface.blit(self.sprite, self.rect.topleft)
